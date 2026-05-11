@@ -61,7 +61,6 @@ This project helped me strengthen my skills in:
 • DAX Optimization
 • Synthetic Data Generation with Python
 
-Thanks to MAAB ACADEMY and my mentor Jur’atbek Otajonov for their guidance and support throughout this project.
 
 #PowerBI #Python #Faker #BusinessIntelligence #DataAnalytics #Dashboard #BankingAnalytics #DataVisualization #DAX #PowerQuery #BI #Analytics #PowerBIDashboard #LinkedInProjects #DataScience #Uzbekistan
 
