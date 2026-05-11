@@ -1,0 +1,183 @@
+Bank Power BI Dashboard Roadmap
+1. Data Preparation and Modeling
+Import Data:
+Load CSV fayllar:
+
+Dim_Date.csv
+
+Dim_Region.csv 
+
+Dim_Customers.csv
+
+Dim_Branches.csv
+
+Dim_Products.csv
+
+Dim_Channel.csv 
+
+Dim_Loans.csv
+
+Fact_Transactions.csv
+
+Fact_LoanPayments.csv 
+
+Clean Data:
+Qo‘shimcha jadvallarni tekshirish:
+
+Dim_Region: Region_ID, Region_Name_Uz, Region_Name_Eng (matn)
+
+Dim_Channel: Channel_ID, Channel_Name, Channel_Type
+
+Fact_LoanPayments: Payment_ID, Loan_ID, Payment_Date, Payment_Amount, Principal, Interest (o‘nlik). Bo‘sh qiymatlar yo‘q.
+
+Build Data Model:
+Munosabatlar (1:*):
+
+Fact_Transactions[Date_Key] → Dim_Date[Date_Key]
+
+Fact_Transactions[Customer_ID] → Dim_Customers[Customer_ID]
+
+Fact_Transactions[Branch_ID] → Dim_Branches[Branch_ID]
+
+Fact_Transactions[Product_ID] → Dim_Products[Product_ID]
+
+Fact_Transactions[Channel_ID] → Dim_Channel[Channel_ID]
+
+Dim_Loans[Customer_ID] → Dim_Customers[Customer_ID]
+
+Dim_Branches[Region_ID] → Dim_Region[Region_ID]
+
+Dim_Customers[Region_ID] → Dim_Region[Region_ID]
+
+Fact_LoanPayments[Loan_ID] → Dim_Loans[Loan_ID]
+
+Dim_Date ustunlari: Year, Quarter, Month_Name, Is_Weekend.
+Dim_Branches dagi Latitude/Longitude – xarita vizualizatsiyasi.
+Dim_Region dagi Region_Name_Eng – Shape Map uchun location maydoni.
+
+2. Define KPIs (qo‘shimchalar)
+Kanaldan foydalanish ulushi:
+Mobile Usage % = DIVIDE(CALCULATE(COUNTROWS(Fact_Transactions), Dim_Channel[Channel_Name]="Mobile App"), COUNTROWS(Fact_Transactions))
+(Shunga o‘xshash Web Usage %, ATM Usage %)
+
+O‘rtacha oylik to‘lov (kredit bo‘yicha):
+Avg Monthly Payment = AVERAGEX(Fact_LoanPayments, Fact_LoanPayments[Payment_Amount])
+
+To‘lov intizomi (%):
+Payment Discipline = DIVIDE( COUNTROWS(Fact_LoanPayments), COUNTROWS(SUMMARIZE(Fact_LoanPayments, Fact_LoanPayments[Loan_ID])) * (maksimal to‘lovlar soni) )
+Soddaroq: Discipline Rate = 1 - (COUNTROWS(FILTER(Fact_LoanPayments, Fact_LoanPayments[Payment_Date] > RELATED(Dim_Loans[Due_Date])))) (Agar due_date mavjud bo‘lsa; hozircha mavjud emas – keyingi versiyaga).
+
+Qolgan qarz dinamikasi (Fact_LoanPayments orqali):
+Remaining Debt Trend = SUM(Dim_Loans[Remaining_Debt]) – vaqt bo‘yicha.
+
+3. Design Visualizations
+Sahifa 1: Executive Dashboard
+(o‘zgarishsiz)
+
+Sahifa 2: Mijozlar tahlili
+
+Xarita (Shape Map): Region_Name_Eng asosida, rang – Total Transaction Value yoki NPL Ratio.
+
+Stacked bar chart: Gender va Age.
+
+Jadval: Top 10 mijozlar.
+
+Sahifa 3: Filiallar va hududlar
+
+Bubble xarita (Latitude/Longitude).
+
+Shtrixli diagramma: Plan Achievement.
+
+Matritsa: Branch_Name, City, xatolik ulushi.
+
+Sahifa 4: Kredit portfeli
+
+Donut: NPL ulushi.
+
+Gistogramma: kredit summalari.
+
+Vaqt seriyasi: Qolgan qarz va to‘lovlar dinamikasi (Line chart – Remaining_Debt va Payment_Amount oylar bo‘yicha).
+
+Yangi: To‘lov intizomi gauge (target 95%).
+
+Sahifa 5: Operatsion samaradorlik
+
+Pie/Donut chart: Dim_Channel[Channel_Name] bo‘yicha tranzaksiyalar soni.
+
+Bar chart: Xatoliklar Product_Name bo‘yicha.
+
+Karta: Kutilayotgan tranzaksiyalar soni.
+
+Stacked column chart: Kanallar bo‘yicha muvaffaqiyat darajasi.
+
+Design Tips (o‘zgarishsiz, faqat Product_Category va Channel slicer qo‘shiladi)
+
+4. Add Interactivity
+Slicerlarga qo‘shimcha:
+
+Channel_Name (Mobile, Web, ATM, Filial, Call Center)
+
+Region_Name_Uz (yoki Eng)
+
+Product_Category
+
+Drill-down:
+
+Vaqt: Year → Quarter → Month_Name
+
+Mahsulot: Category → Product_Name
+
+Hudud: Region_Name_Uz → City (filial shaharlari)
+
+Cross-filtering va Bookmarks – o‘zgarishsiz.
+
+5. Derive Insights
+Qo‘shimcha insaytlar:
+
+Kanallar samaradorligi: Qaysi kanal eng ko‘p muvaffaqiyatli tranzaksiyalarga ega? Qaysi kanalda xatolik ko‘p?
+
+To‘lov intizomi: Qaysi hudud yoki kasb vakillari kreditni o‘z vaqtida to‘laydi?
+
+Kredit to‘lovlari vs yangi kreditlar: To‘lovlar va yangi kreditlar o‘rtasidagi bog‘liqlik.
+
+6. Testing and Validation
+Yangi jadvallar uchun tekshiruv:
+
+Fact_LoanPayments dagi Loan_ID larning barchasi Dim_Loans da mavjudmi?
+
+Fact_Transactions[Channel_ID] Dim_Channel ga bog‘langanmi?
+
+Shape Map uchun Region_Name_Eng uz.json nomlariga to‘liq mos keladimi (Tashkent, Samarkand, Ferghana, Bukhoro, Andijon, Namangan, Kashkadarya, Surkhandarya, Khorezm, Navoi, Jizzakh, Sirdaryo, Karakalpakstan).
+
+KPI hisoblari (masalan, kanal ulushlari yig‘indisi 100% bo‘lishi kerak).
+
+7. Deployment and Sharing
+Publish: .pbix faylni Power BI Service ga yuklang.
+
+Refresh:
+
+Ma’lumotlar har kuni yangilanadigan bo‘lsa, Gateway orqali avtomatik yangilanishni sozlang (yoki CSV larni OneDrive/SharePoint ga joylashtiring).
+
+Share:
+
+Power BI ilovasini yaratib, tegishli foydalanuvchilarga ruxsat bering.
+
+Agar kerak bo‘lsa, Excel yoki PDF eksport qilish imkoniyatini qoldiring.
+
+8. Maintenance and Iteration
+Monitor: Power BI Service’da “Usage metrics” orqali dashboard qanchalik ishlatilayotganini kuzating.
+
+Update:
+
+Yangi KPI qo‘shish (masalan, “Fraud tranzaksiyalar ulushi” – agar ma’lumot mavjud bo‘lsa).
+
+Vaqt o‘tishi bilan Dim_Date ni yangilash (2025+ yillar uchun).
+
+Refine:
+
+Foydalanuvchi mulohazalariga asosan vizuallar, ranglar yoki sahifalar tartibini o‘zgartiring.
+
+Eng sekin vizuallarni optimallashtiring (masalan, DISTINCTCOUNT o‘rniga COUNTROWS + VALUES).
+
+
+

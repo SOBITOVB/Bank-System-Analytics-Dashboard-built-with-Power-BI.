@@ -1,0 +1,16 @@
+Product_ID,Product_Name,Category,Service_Fee
+1,Humo kartasi,Karta,15000
+2,UzCard,Karta,12000
+3,Visa Gold,Karta,25000
+4,Mastercard Standard,Karta,20000
+5,Avtokredit,Kredit,50000
+6,Ipoteka,Kredit,100000
+7,Iste’mol krediti,Kredit,30000
+8,Kredit karta,Kredit,40000
+9,Omonat (Depozit),Omonat,0
+10,Kumulyativ omonat,Omonat,0
+11,Kommunal to‘lov,To‘lovlar,2000
+12,Internet to‘lov,To‘lovlar,1500
+13,Mobil aloqa to‘lovi,To‘lovlar,1000
+14,Pul o‘tkazmasi,To‘lovlar,5000
+15,Valyuta ayirboshlash,To‘lovlar,10000
